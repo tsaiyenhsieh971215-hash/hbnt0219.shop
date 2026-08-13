@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>姆熊の窩 ｜ 個人專屬賣場</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warmbg: '#FBF9F5',
+                        warmcard: '#FFFDF9',
+                        warmprimary: '#D4A373',
+                        warmhover: '#BC8A5F',
+                        warmtext: '#584E42',
+                        warmtag: '#E9EDC9'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #FBF9F5; color: #584E42; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <header class="sticky top-0 z-50 bg-warmbg/90 backdrop-blur-md border-b border-warmprimary/20">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="#" onclick="switchTab('home')" class="text-xl font-bold tracking-wider text-warmtext flex items-center gap-2">
+                🐻 姆熊の窩
+            </a>
+            <div class="flex items-center gap-4">
+                <button onclick="switchTab('cart')" class="relative p-2 bg-white rounded-full shadow-sm border border-warmprimary/20">
+                    🛒
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-warmprimary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+        
+        <section id="tab-home" class="space-y-6">
+            <div class="bg-[#F4EBE1] rounded-3xl p-6 md:p-10 text-center border border-warmprimary/10 shadow-sm">
+                <h1 class="text-2xl md:text-3xl font-bold mb-2">歡迎來到 姆熊の窩 🐾</h1>
+                <p class="text-sm md:text-base text-warmtext/80 mb-4">客製化壓克力、繪圖委託與療癒選物小天地</p>
+                <button onclick="switchTab('custom')" class="bg-warmprimary hover:bg-warmhover text-white px-6 py-3 rounded-full font-medium shadow-md transition">
+                    ✨ 開始客製訂製
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button onclick="filterCategory('客製訂製')" class="p-4 bg-white rounded-2xl shadow-sm border border-warmprimary/10 text-center hover:shadow-md transition">
+                    <div class="text-2xl mb-1">🎨</div>
+                    <div class="font-medium text-sm">客製訂製</div>
+                </button>
+                <button onclick="filterCategory('繪圖委託')" class="p-4 bg-white rounded-2xl shadow-sm border border-warmprimary/10 text-center hover:shadow-md transition">
+                    <div class="text-2xl mb-1">✍️</div>
+                    <div class="font-medium text-sm">繪圖委託</div>
+                </button>
+                <button onclick="filterCategory('撿漏區')" class="p-4 bg-white rounded-2xl shadow-sm border border-warmprimary/10 text-center hover:shadow-md transition relative">
+                    <div class="text-2xl mb-1">🐻</div>
+                    <div class="font-medium text-sm">撿漏區</div>
+                    <span class="absolute top-2 right-2 bg-red-400 text-white text-[10px] px-1.5 py-0.5 rounded-full">限量</span>
+                </button>
+                <button onclick="filterCategory('零食雜貨')" class="p-4 bg-white rounded-2xl shadow-sm border border-warmprimary/10 text-center hover:shadow-md transition">
+                    <div class="text-2xl mb-1">🍡</div>
+                    <div class="font-medium text-sm">零食雜貨</div>
+                </button>
+            </div>
+
+            <div class="bg-amber-50/50 border border-amber-200/60 rounded-3xl p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="font-bold text-lg flex items-center gap-1">🐻 撿漏區 ｜ 數量有限，售完不補</h2>
+                    <button onclick="filterCategory('撿漏區')" class="text-xs text-warmprimary font-medium">查看全部 →</button>
+                </div>
+                <div id="clearance-list" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    </div>
+            </div>
+
+            <div>
+                <h2 class="font-bold text-lg mb-3">全部商品 / 委託項目</h2>
+                <div id="product-list" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    </div>
+            </div>
+        </section>
+
+        <section id="tab-detail" class="hidden space-y-4">
+            <button onclick="switchTab('home')" class="text-sm font-medium text-warmprimary mb-2">← 返回列表</button>
+            <div id="product-detail-content" class="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-warmprimary/10">
+                </div>
+        </section>
+
+        <section id="tab-cart" class="hidden space-y-6">
+            <h2 class="text-xl font-bold">🛒 購物車結帳</h2>
+            <div id="cart-items-container" class="bg-white rounded-3xl p-5 shadow-sm border border-warmprimary/10 space-y-4">
+                </div>
+
+            <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmprimary/10 space-y-4">
+                <h3 class="font-bold border-b pb-2">📦 7-11 賣貨便寄送資訊</h3>
+                <form id="checkout-form" onsubmit="submitOrder(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium mb-1">真實姓名 (領包裹用)</label>
+                        <input type="text" id="buyer-name" required class="w-full p-3 rounded-xl border border-warmprimary/30 bg-warmbg text-sm focus:outline-none focus:border-warmprimary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1">手機號碼</label>
+                        <input type="tel" id="buyer-phone" required class="w-full p-3 rounded-xl border border-warmprimary/30 bg-warmbg text-sm focus:outline-none focus:border-warmprimary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1">收件地區</label>
+                        <input type="text" id="buyer-region" placeholder="例如：台北市 / 高雄市" required class="w-full p-3 rounded-xl border border-warmprimary/30 bg-warmbg text-sm focus:outline-none focus:border-warmprimary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1">7-11 取貨門市名稱與店號</label>
+                        <input type="text" id="buyer-store" placeholder="例如：華視門市 (店號: 123456)" required class="w-full p-3 rounded-xl border border-warmprimary/30 bg-warmbg text-sm focus:outline-none focus:border-warmprimary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1">備註 (選填)</label>
+                        <textarea id="buyer-note" rows="2" class="w-full p-3 rounded-xl border border-warmprimary/30 bg-warmbg text-sm focus:outline-none focus:border-warmprimary"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-warmprimary hover:bg-warmhover text-white py-3.5 rounded-2xl font-bold shadow-md transition">
+                        送出訂單並前往抽獎 🎡
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="tab-success" class="hidden text-center space-y-6 py-10">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-warmprimary/10 max-w-md mx-auto space-y-4">
+                <div class="text-5xl">🎉</div>
+                <h2 class="text-2xl font-bold">訂單已成功送出！</h2>
+                <p class="text-sm text-warmtext/80">感謝您的購買，您的專屬訂單編號為：<br><span id="success-order-id" class="font-bold text-warmprimary text-lg"></span></p>
+                <div class="p-4 bg-amber-50 rounded-2xl text-xs text-amber-800">
+                    ⚠️ 提醒：每筆訂單僅能享有一次專屬抽獎機會，請點擊下方按鈕前往抽獎！
+                </div>
+                <a id="lottery-btn" href="#" target="_blank" class="block w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl font-bold shadow-md transition">
+                    🎡 前往該筆訂單專屬抽獎
+                </a>
+                <button onclick="switchTab('home')" class="text-sm text-warmprimary font-medium block mx-auto pt-2">返回首頁</button>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-warmprimary/20 py-2 px-6 flex justify-around items-center z-40 max-w-4xl mx-auto">
+        <button onclick="switchTab('home')" class="flex flex-col items-center text-xs text-warmtext">
+            <span class="text-lg">🏠</span>首頁
+        </button>
+        <button onclick="switchTab('cart')" class="flex flex-col items-center text-xs text-warmtext relative">
+            <span class="text-lg">🛒</span>購物車
+        </button>
+        <button onclick="window.location.href='admin.html'" class="flex flex-col items-center text-xs text-warmtext/50">
+            <span class="text-lg">⚙️</span>後台
+        </button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
